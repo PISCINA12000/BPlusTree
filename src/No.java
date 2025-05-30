@@ -1,5 +1,5 @@
 public class No {
-    public static final int N = 4;
+    public static final int N = 5;
     private int[] vInfo;
     private int[] vPos;
     private int TL;
@@ -34,7 +34,7 @@ public class No {
     }
 
     public void remanejarInsercao(int pos){
-        for(int i = TL-1; i > pos; i--) {
+        for(int i = TL; i > pos; i--) {
             vInfo[i] = vInfo[i - 1];
             vPos[i] = vPos[i - 1];
         }

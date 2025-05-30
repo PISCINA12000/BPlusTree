@@ -27,8 +27,8 @@ public class BMais {
             //remanejo de acordo com a posição ideal de inserção
             folha.remanejarInsercao(pos);
             //setando os valores no espaço aberto
-            folha.setvInfo(pos, info);
-            folha.setvPos(pos, posArq);
+            folha.setvInfo(info, pos);
+            folha.setvPos(posArq, pos);
             //aumentando o TL da folha
             folha.setTL(folha.getTL()+1);
 
@@ -104,6 +104,7 @@ public class BMais {
         novoPai.setvLig(cx1,0);
         novoPai.setvLig(cx2,1);
         novoPai.setTL(1);
+        raiz = novoPai;
     }
     private void splitRaizPonteiro(No folha, No pai) {
         NoPonteiro cx1 = new NoPonteiro(), cx2 = new NoPonteiro();
@@ -124,10 +125,12 @@ public class BMais {
         novoPai.setvInfo(folha.getvInfo(max1),0);
         novoPai.setvPos(folha.getvPos(max1),0);
         //preencher a caixa 2
+        int posCx = 0;
         for (int i=max1+1; i<max2; i++){
-            cx2.setvInfo(folha.getvInfo(i), i-max1+1);
-            cx2.setvPos(folha.getvPos(i), i-max1+1);
-            cx2.setvLig(((NoPonteiro) folha).getvLig(i), i-max1+1);
+            cx2.setvInfo(folha.getvInfo(i), posCx);
+            cx2.setvPos(folha.getvPos(i), posCx);
+            cx2.setvLig(((NoPonteiro) folha).getvLig(i), posCx);
+            posCx++;
             cx2.setTL(cx2.getTL()+1);
         }
         cx2.setvLig(((NoPonteiro) folha).getvLig(folha.getTL()), max1-1);
@@ -136,6 +139,7 @@ public class BMais {
         novoPai.setvLig(cx1, 0);
         novoPai.setvLig(cx2, 1);
         novoPai.setTL(1);
+        raiz = novoPai;
     }
     private void splitNaoRaizFolha(No folha, No pai) {
         NoFolha cx1 = new NoFolha(), cx2 = new NoFolha();
@@ -158,12 +162,21 @@ public class BMais {
 
         //preencher o pai com a nova informação
         int pos = pai.procurarPosicao(cx2.getvInfo(0));
-        pai.remanejarInsercao(pos);
+        ((NoPonteiro)pai).remanejarInsercao(pos);
         pai.setvInfo(cx2.getvInfo(0), pos);
         pai.setvPos(cx2.getvPos(0), pos);
         ((NoPonteiro) pai).setvLig(cx1, pos);
         ((NoPonteiro) pai).setvLig(cx2, pos+1);
         pai.setTL(pai.getTL()+1); //adiciono pois o pai já existe
+
+        if (pai.getTL() == No.N){
+            folha = pai;
+            pai = localizarPai(folha, folha.getvInfo(0));
+            if (pai==folha) //a nova folha é raiz
+                splitRaizPonteiro(folha, pai);
+            else
+                splitNaoRaizPonteiro(folha, pai);
+        }
     }
     private void splitNaoRaizPonteiro(No folha, No pai) {
         NoPonteiro cx1 = new NoPonteiro(), cx2 = new NoPonteiro();
@@ -181,22 +194,59 @@ public class BMais {
         //preencher com a ultima ligacao da cx1
         cx1.setvLig(((NoPonteiro) folha).getvLig(max1), max1);
         //preencher a cx2
+        int posCx = 0;
         for (int i=max1+1; i<max2; i++){
-            cx2.setvInfo(folha.getvInfo(i), i-max1+1);
-            cx2.setvPos(folha.getvPos(i), i-max1+1);
-            cx2.setvLig(((NoPonteiro) folha).getvLig(i), i-max1+1);
+            cx2.setvInfo(folha.getvInfo(i), posCx);
+            cx2.setvPos(folha.getvPos(i), posCx);
+            cx2.setvLig(((NoPonteiro) folha).getvLig(i), posCx);
+            posCx++;
             cx2.setTL(cx2.getTL()+1);
         }
         cx2.setvLig(((NoPonteiro) folha).getvLig(max2), max1-1);
 
         //mandar para o pai o elemento que ficaria na pos 0 da cx2
         int pos = pai.procurarPosicao(folha.getvInfo(max1));
-        pai.remanejarInsercao(pos);
+        ((NoPonteiro) pai).remanejarInsercao(pos);
         pai.setvInfo(folha.getvInfo(max1), pos);
         //terminar de preencher o pai
         ((NoPonteiro) pai).setvLig(cx1, pos);
         ((NoPonteiro) pai).setvLig(cx2, pos+1);
         pai.setTL(pai.getTL()+1);
+
+        if (pai.getTL() == No.N){
+            folha = pai;
+            pai = localizarPai(folha, folha.getvInfo(0));
+            if (pai==folha) //a nova folha é raiz
+                splitRaizPonteiro(folha, pai);
+            else
+                splitNaoRaizPonteiro(folha, pai);
+        }
+    }
+
+    public void exibirArvoreNiveis(){
+        exibirArvoreNIVEIS(raiz, 0);
+    }
+    private void exibirArvoreNIVEIS(No folha, int nivel){
+        //exibir os tabs para identação
+        for (int i=0; i<nivel-1; i++) {
+            System.out.print("\t");
+        }
+        if(nivel>0){
+            System.out.print("-");
+        }
+        //exibir os valores do meu vetor
+        for (int i = 0; i < folha.getTL(); i++) {
+            System.out.print(folha.getvInfo(i) + " ");
+        }
+        System.out.println();
+
+        //verifico se é ponteiro para chamar os seus filhos recursivamente
+        if(folha instanceof NoPonteiro){
+            for (int i = 0; i < folha.getTL(); i++) {
+                exibirArvoreNIVEIS(((NoPonteiro) folha).getvLig(i), nivel+1);
+            }
+            exibirArvoreNIVEIS(((NoPonteiro) folha).getvLig(folha.getTL()), nivel+1);
+        }
     }
 
     //Gets e Sets
