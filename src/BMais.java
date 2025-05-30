@@ -98,6 +98,9 @@ public class BMais {
             cx2.setvPos(folha.getvPos(i), i-max1);
             cx2.setTL(cx2.getTL()+1);
         }
+        //setar o ant e o prox
+        cx1.setProx(cx2);
+        cx2.setAnt(cx1);
 
         //preencher o pai
         novoPai.setvInfo(cx2.getvInfo(0),0); //seto a informação da raiz
@@ -106,6 +109,7 @@ public class BMais {
         novoPai.setvLig(cx2,1);
         novoPai.setTL(1);
         raiz = novoPai;
+
     }
     private void splitRaizPonteiro(No folha, No pai) {
         NoPonteiro cx1 = new NoPonteiro(), cx2 = new NoPonteiro();
@@ -161,6 +165,9 @@ public class BMais {
             cx2.setvPos(folha.getvPos(i), i-max1);
             cx2.setTL(cx2.getTL()+1);
         }
+        //setar o ant e o prox
+        cx1.setProx(cx2);
+        cx2.setAnt(cx1);
 
         //preencher o pai com a nova informação
         int pos = pai.procurarPosicao(cx2.getvInfo(0));
@@ -170,6 +177,16 @@ public class BMais {
         ((NoPonteiro) pai).setvLig(cx1, pos);
         ((NoPonteiro) pai).setvLig(cx2, pos+1);
         pai.setTL(pai.getTL()+1); //adiciono pois o pai já existe
+
+        //arrumar as ligações
+        if(pos-1 >= 0) {
+            cx1.setAnt(((NoPonteiro) pai).getvLig(pos - 1));
+            ((NoFolha)((NoPonteiro) pai).getvLig(pos - 1)).setProx(cx1);
+        }
+        if(pos+2 <= pai.getTL()) {
+            cx2.setProx(((NoPonteiro) pai).getvLig(pos + 2));
+            ((NoFolha)((NoPonteiro) pai).getvLig(pos+2)).setProx(cx2);
+        }
 
         if (pai.getTL() == No.N){
             folha = pai;
@@ -250,6 +267,23 @@ public class BMais {
                 exibirArvoreNIVEIS(((NoPonteiro) folha).getvLig(i), nivel+1);
             }
             exibirArvoreNIVEIS(((NoPonteiro) folha).getvLig(folha.getTL()), nivel+1);
+        }
+    }
+
+    public void exibirFolhas(){
+        //encontrar a primeira folha de todas
+        No aux = raiz;
+        while (aux instanceof NoPonteiro) {
+            aux = ((NoPonteiro) aux).getvLig(0);
+        }
+        //cheguei até a primeira folha
+        while (aux != null){
+            System.out.print("|");
+            for (int i = 0; i < aux.getTL(); i++) {
+                System.out.print(aux.getvInfo(i) + "|");
+            }
+            System.out.println();
+            aux = ((NoFolha) aux).getProx();
         }
     }
 

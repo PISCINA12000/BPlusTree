@@ -4,11 +4,16 @@ public class Principal {
 
         for (int i = 0; i < 100; i++) {
             arvoreB.inserir(i,i);
+//            System.out.println("Arvore:");
 //            arvoreB.exibirArvoreNiveis();
-//            for(int j=0; j<2; j++)
-//                System.out.println();
+//            System.out.println("Folhas:");
+//            arvoreB.exibirFolhas();
+//            System.out.println();
         }
 
+        System.out.println("Arvore:");
         arvoreB.exibirArvoreNiveis();
+        System.out.println("Folhas:");
+        arvoreB.exibirFolhas();
     }
 }
