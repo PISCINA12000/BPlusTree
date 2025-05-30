@@ -271,11 +271,7 @@ public class BMais {
     }
 
     public void exibirFolhas(){
-        //encontrar a primeira folha de todas
-        No aux = raiz;
-        while (aux instanceof NoPonteiro) {
-            aux = ((NoPonteiro) aux).getvLig(0);
-        }
+        No aux = primeiraFolha();
         //cheguei até a primeira folha
         while (aux != null){
             System.out.print("|");
@@ -285,6 +281,36 @@ public class BMais {
             System.out.println();
             aux = ((NoFolha) aux).getProx();
         }
+    }
+
+    public void exibirFolhasRev(){
+        No aux = ultimaFolha(); //irá mudar aqui em relação ao outro metodo
+        while (aux != null){
+            System.out.print("|");
+            for (int i = 0; i < aux.getTL(); i++) {
+                System.out.print(aux.getvInfo(i) + "|");
+            }
+            System.out.println();
+            aux = ((NoFolha) aux).getAnt(); //irá mudar aqui em relação ao outro metodo
+        }
+    }
+
+    public No primeiraFolha(){
+        //metodo que retorna a primeira folha mais a esquerda
+        No aux = raiz;
+        while (aux instanceof NoPonteiro) {
+            aux = ((NoPonteiro) aux).getvLig(0);
+        }
+        return aux;
+    }
+
+    public No ultimaFolha(){
+        //metodo que retorna a ultima folha mais a direita
+        No aux = raiz;
+        while (aux instanceof NoPonteiro) {
+            aux = ((NoPonteiro) aux).getvLig(aux.getTL());
+        }
+        return aux;
     }
 
     //Gets e Sets

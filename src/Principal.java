@@ -13,7 +13,9 @@ public class Principal {
 
         System.out.println("Arvore:");
         arvoreB.exibirArvoreNiveis();
-        System.out.println("Folhas:");
+        System.out.println("Folhas Crescente:");
         arvoreB.exibirFolhas();
+        System.out.println("Folhas Reverso:");
+        arvoreB.exibirFolhasRev();
     }
 }
