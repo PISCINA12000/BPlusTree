@@ -11,6 +11,7 @@ public class BMais {
     }
 
     //Métodos-------------------------------------------------------------
+    //Inserção na árvore
     public void inserir(int info, int posArq){
         No folha, pai;
         int pos;
@@ -38,6 +39,11 @@ public class BMais {
                 split(folha, pai);
             }
         }
+    }
+
+    //remover da árvore
+    public void remover(int info){
+
     }
 
     public No procurarFolha(int info){
