@@ -67,6 +67,7 @@ public class BMais {
     }
 
     public void split(No folha, No pai) {
+        //tratar os 4 casos de splits diferentes
         if (raiz == folha)
             if (folha instanceof NoFolha)
                 splitRaizFolha(folha, pai);
@@ -82,7 +83,7 @@ public class BMais {
         NoFolha cx1 = new NoFolha(), cx2 = new NoFolha();
         NoPonteiro novoPai = new NoPonteiro();
         int max1, max2;
-        max1 = No.N/2;
+        max1 = (int)Math.ceil(No.N/2.0);
         max2 = folha.getTL();
 
         //preencher a caixa 1
@@ -122,6 +123,7 @@ public class BMais {
         }
         cx1.setvLig(((NoPonteiro) folha).getvLig(max1), max1);
         //enviar o elemento que ficaria na primeira posição da cx2 para o novo pai
+        int posParaPai = (int)Math.ceil(No.N/2.0);
         novoPai.setvInfo(folha.getvInfo(max1),0);
         novoPai.setvPos(folha.getvPos(max1),0);
         //preencher a caixa 2
@@ -133,7 +135,7 @@ public class BMais {
             posCx++;
             cx2.setTL(cx2.getTL()+1);
         }
-        cx2.setvLig(((NoPonteiro) folha).getvLig(folha.getTL()), max1-1);
+        cx2.setvLig(((NoPonteiro) folha).getvLig(folha.getTL()), posParaPai-1);
 
         //terminar de preencher o pai
         novoPai.setvLig(cx1, 0);
@@ -144,7 +146,7 @@ public class BMais {
     private void splitNaoRaizFolha(No folha, No pai) {
         NoFolha cx1 = new NoFolha(), cx2 = new NoFolha();
         int max1, max2;
-        max1 = No.N/2;
+        max1 = (int)Math.ceil(No.N/2.0);
         max2 = folha.getTL();
 
         //preencher a cx1
@@ -194,6 +196,7 @@ public class BMais {
         //preencher com a ultima ligacao da cx1
         cx1.setvLig(((NoPonteiro) folha).getvLig(max1), max1);
         //preencher a cx2
+        int posParaPai = (int)Math.ceil(No.N/2.0);
         int posCx = 0;
         for (int i=max1+1; i<max2; i++){
             cx2.setvInfo(folha.getvInfo(i), posCx);
@@ -202,12 +205,13 @@ public class BMais {
             posCx++;
             cx2.setTL(cx2.getTL()+1);
         }
-        cx2.setvLig(((NoPonteiro) folha).getvLig(max2), max1-1);
+        cx2.setvLig(((NoPonteiro) folha).getvLig(max2), posParaPai-1);
 
         //mandar para o pai o elemento que ficaria na pos 0 da cx2
         int pos = pai.procurarPosicao(folha.getvInfo(max1));
         ((NoPonteiro) pai).remanejarInsercao(pos);
         pai.setvInfo(folha.getvInfo(max1), pos);
+        pai.setvPos(folha.getvPos(max1), pos);
         //terminar de preencher o pai
         ((NoPonteiro) pai).setvLig(cx1, pos);
         ((NoPonteiro) pai).setvLig(cx2, pos+1);
@@ -232,11 +236,11 @@ public class BMais {
             System.out.print("\t");
         }
         if(nivel>0){
-            System.out.print("-");
+            System.out.print(" -");
         }
         //exibir os valores do meu vetor
         for (int i = 0; i < folha.getTL(); i++) {
-            System.out.print(folha.getvInfo(i) + " ");
+            System.out.print(folha.getvInfo(i) + "|");
         }
         System.out.println();
 

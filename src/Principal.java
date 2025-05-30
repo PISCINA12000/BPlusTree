@@ -2,13 +2,11 @@ public class Principal {
     public static void main(String[] args) {
         BMais arvoreB = new BMais();
 
-        for (int i = 0; i < 1000; i++) {
-            if(i==40){
-                System.out.println("oi");
-                arvoreB.exibirArvoreNiveis();
-            }
+        for (int i = 0; i < 100; i++) {
             arvoreB.inserir(i,i);
-            System.out.println(i);
+//            arvoreB.exibirArvoreNiveis();
+//            for(int j=0; j<2; j++)
+//                System.out.println();
         }
 
         arvoreB.exibirArvoreNiveis();
