@@ -43,7 +43,79 @@ public class BMais {
 
     //remover da árvore
     public void remover(int info){
+        //na remoção eu tenho alguns casos para considerar
 
+        No folha, pai, irmaE, irmaD, noIndice;
+        int pos, posNoIndice;
+
+        folha = procurarFolha(info);
+        if(folha == raiz){
+          if(folha.getTL() == 1){
+              //caso de ser o elemento da raiz a ser excluido e a raiz ficar com valor null
+              raiz = null;
+          }
+          else {
+              //caso de ser raiz mas a raiz nao ficar null
+              pos = folha.procurarPosicao(info);
+              folha.remanejarExclusao(pos);
+              folha.setTL(folha.getTL()-1);
+          }
+        }
+        else {
+            pos = folha.procurarPosicao(info);
+            if(pos == 0){
+                noIndice = procurarNoPonteiro(info);
+                posNoIndice = noIndice.procurarPosicao(info);
+                noIndice.setvInfo(posNoIndice, folha.getvInfo(pos+1));
+            }
+            folha.remanejarExclusao(pos);
+            folha.setTL(folha.getTL()-1);
+            if(folha.getTL() < (int)Math.ceil(No.N/2.0)-1){
+                redistribuirConcatenar(folha);
+            }
+        }
+    }
+
+    public void redistribuirConcatenar(No no){
+        No pai, irmaE, irmaD;
+        int pos;
+
+        pai = localizarPai(no, no.getvInfo(0));
+        irmaE = localizarIrmaEsq(no);
+        irmaD = localizarIrmaDir(no);
+        if(no instanceof NoFolha){
+            //verificar se consigo redistribuir com a esquerda
+            if(irmaE != null && irmaE.getTL() > (int)Math.ceil(No.N/2.0)-1){
+                //se entrou, entao eu posso redistribuir com ela
+                pos = pai.procurarPosicao(irmaE.getvInfo(irmaE.getTL()-1));
+                pai.setvInfo(irmaE.getvInfo(irmaE.getTL()-1), pos);
+                no.remanejarInsercao(0);
+                no.setvInfo(irmaE.getvInfo(irmaE.getTL()-1), 0);
+                no.setTL(no.getTL()+1);
+                irmaE.setTL(irmaE.getTL()-1);
+            }
+            else if (irmaD != null && irmaD.getTL() > (int)Math.ceil(No.N/2.0)-1){
+                //se entrou, entao eu posso redistribuir com ela
+                pos = pai.procurarPosicao(irmaD.getvInfo(0));
+                no.setvInfo(pai.getvInfo(pos), no.getTL());
+                no.setTL(no.getTL()+1);
+                irmaD.remanejarExclusao(0);
+                irmaD.setTL(irmaD.getTL()-1);
+                pai.setvInfo(irmaD.getvInfo(0), pos);
+            }
+            //se chegou aqui entao sera necessario a concatenacao
+            else if (irmaE != null){
+                //concatenar com a irma da esquerda
+
+            }
+            else if (irmaD != null){
+                //concatenar com a irma da direita
+
+            }
+        }
+        else{
+
+        }
     }
 
     public No procurarFolha(int info){
@@ -54,6 +126,24 @@ public class BMais {
             if(aux instanceof NoPonteiro) {
                 aux = ((NoPonteiro) aux).getvLig(pos);
             }
+        }
+        return aux;
+    }
+
+    public No procurarNoPonteiro(int info){
+        No aux = raiz;
+        int pos;
+        boolean achou = false;
+        while(aux!=null && !achou){
+            if(aux instanceof NoPonteiro){
+                pos = aux.procurarPosicao(info);
+                if(info == aux.getvInfo(pos))
+                    achou = true;
+                else
+                    aux = ((NoPonteiro) aux).getvLig(pos);
+            }
+            else
+                aux = null;
         }
         return aux;
     }
@@ -70,6 +160,34 @@ public class BMais {
             }
         }
         return pai;
+    }
+
+    public No localizarIrmaEsq(No folha){
+        //tratar quando o folha eh o seu proprio pai
+        No pai = localizarPai(folha, folha.getvInfo(0));
+        if(pai == folha) //a folha eh raiz
+            return null;
+        else{
+            int pos = pai.procurarPosicao(folha.getvInfo(0));
+            if(pos > 0){
+                return ((NoPonteiro) pai).getvLig(pos-1);
+            }
+            return null;
+        }
+    }
+
+    public No localizarIrmaDir(No folha){
+        //tratar quando o folha eh o seu proprio pai
+        No pai = localizarPai(folha, folha.getvInfo(0));
+        if(pai == folha) //a folha eh raiz
+            return null;
+        else{
+            int pos = pai.procurarPosicao(folha.getvInfo(0));
+            if(pos < pai.getTL()){
+                return ((NoPonteiro) pai).getvLig(pos+1);
+            }
+            return null;
+        }
     }
 
     public void split(No folha, No pai) {
