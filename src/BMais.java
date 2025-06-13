@@ -66,7 +66,7 @@ public class BMais {
             if(pos == 0){
                 noIndice = procurarNoPonteiro(info);
                 posNoIndice = noIndice.procurarPosicao(info);
-                noIndice.setvInfo(posNoIndice, folha.getvInfo(pos+1));
+                noIndice.setvInfo(folha.getvInfo(pos+1), posNoIndice);
             }
             folha.remanejarExclusao(pos);
             folha.setTL(folha.getTL()-1);
@@ -94,6 +94,7 @@ public class BMais {
                 no.setTL(no.getTL()+1);
                 irmaE.setTL(irmaE.getTL()-1);
             }
+            //verificar se consigo redistribuir com a direita
             else if (irmaD != null && irmaD.getTL() > (int)Math.ceil(No.N/2.0)-1){
                 //se entrou, entao eu posso redistribuir com ela
                 pos = pai.procurarPosicao(irmaD.getvInfo(0));
@@ -106,15 +107,122 @@ public class BMais {
             //se chegou aqui entao sera necessario a concatenacao
             else if (irmaE != null){
                 //concatenar com a irma da esquerda
+                //concatenarEsquerdaFolha(no, irmaE, pai);
 
+                //achar o elemento a ser tirado do pai
+                int posPai = pai.procurarPosicao(no.getvInfo(0));
+                pai.remanejarExclusao(posPai);
+
+                //enviar os elementos do No para a irmaE
+                for(int i=0; i<no.getTL(); i++){
+                    irmaE.setvInfo(no.getvInfo(i), irmaE.getTL());
+                    irmaE.setTL(irmaE.getTL()+1);
+                }
+
+                //mudo o apontamento do 'pai' para a 'irmaE'
+                ((NoPonteiro) pai).setvLig(irmaE, posPai);
+            }
+            else if (irmaD != null){
+                //concatenar com a irma da direita
+                //concatenarDireitaFolha(no, irmaD, pai);
+
+                //achar o elemento a ser tirado do pai
+                int posPai = pai.procurarPosicao(irmaD.getvInfo(0));
+                pai.remanejarExclusao(posPai);
+
+                //enviar os elementos da irmaD para o no
+                for(int i=0;i<irmaD.getTL(); i++){
+                    no.setvInfo(irmaD.getvInfo(i), no.getTL());
+                    no.setTL(no.getTL()+1);
+                }
+
+                //setar a 'pos' do vLig do 'pai' para o 'no'
+                ((NoPonteiro) pai).setvLig(no, posPai);
+            }
+        }
+        else{ //meu no eh uma instancia de NoPonteiro
+            if(irmaE != null && irmaE.getTL() > (int)Math.ceil(No.N/2.0)-1){
+                //se entrou, entao eu posso redistribuir com ela
+
+                //descobrir no pai qual a posicao
+                int posPai = pai.procurarPosicao(no.getvInfo(0));
+
+                //remanejar o 'no' para receber o elemento do 'pai' e a subarvore da irmaE
+                no.remanejarInsercao(0);
+                no.setvInfo(pai.getvInfo(posPai-1), 0);
+                ((NoPonteiro) no).setvLig(((NoPonteiro) irmaE).getvLig(irmaE.getTL()), 0);
+
+                //seto o novo elemento a ser colocado no pai
+                pai.setvInfo(irmaE.getvInfo(irmaE.getTL()-1), posPai-1);
+
+                //retiro um elemento de irmaE
+                irmaE.setTL(irmaE.getTL()-1);
+            }
+            //verificar se consigo redistribuir com a direita
+            else if (irmaD != null && irmaD.getTL() > (int)Math.ceil(No.N/2.0)-1){
+                //se entrou, entao eu posso redistribuir com ela
+
+                //descobrir no 'pai' qual a posicao
+                int posPai = pai.procurarPosicao(no.getvInfo(no.getTL()-1));
+
+                //mando para o 'no' o elemento do 'pai' e a ligacao da 'irmaD'
+                no.setvInfo(pai.getvInfo(posPai), no.getTL());
+                no.setTL(no.getTL()+1);
+                ((NoPonteiro) no).setvLig(((NoPonteiro) irmaD).getvLig(0), no.getTL());
+
+                //mando o elemento da irmaD para o meu pai
+                pai.setvInfo(irmaD.getvInfo(0), posPai);
+
+                //remanejo a exclusao da irmaD e diminuo o seu tl
+                irmaD.remanejarExclusao(0);
+                irmaD.setTL(irmaD.getTL()-1);
+            }
+            //se chegou aqui entao sera necessario a concatenacao
+            else if (irmaE != null){
+                //concatenar com a irma da esquerda
+
+                //encontro a posicao do elemento no 'pai'
+                int posPai = pai.procurarPosicao(no.getvInfo(0));
+
+                //mandar para a 'irmaE' o elemento no 'pai'
+                irmaE.setvInfo(pai.getvInfo(posPai-1), irmaE.getTL());
+                irmaE.setTL(irmaE.getTL()+1);
+
+                //mandar todos os elementos de 'no' para o 'irmaE'
+                for(int i=0; i<no.getTL(); i++){
+                    irmaE.setvInfo(no.getvInfo(i), irmaE.getTL());
+                    ((NoPonteiro) irmaE).setvLig(((NoPonteiro) no).getvLig(i), irmaE.getTL());
+                    irmaE.setTL(irmaE.getTL()+1);
+                }
+                ((NoPonteiro) irmaE).setvLig(((NoPonteiro) no).getvLig(no.getTL()), irmaE.getTL());
+
+                //remanejar o 'pai' e arrumar a ligacao para o 'irmaE'
+                pai.remanejarExclusao(posPai-1);
+                pai.setTL(pai.getTL()-1);
+                ((NoPonteiro) pai).setvLig(irmaE, posPai-1);
             }
             else if (irmaD != null){
                 //concatenar com a irma da direita
 
-            }
-        }
-        else{
+                //encontro a posicao do elemento no 'pai'
+                int posPai = pai.procurarPosicao(no.getvInfo(no.getTL()-1));
 
+                //mandar o elemento do 'pai' para o 'no'
+                no.setvInfo(pai.getvInfo(posPai), no.getTL());
+                no.setTL(no.getTL()+1);
+
+                //mandar todos os elementos da 'irmaD' para o 'no'
+                for(int i=0; i<irmaD.getTL(); i++){
+                    no.setvInfo(irmaD.getvInfo(i), no.getTL());
+                    ((NoPonteiro) no).setvLig(((NoPonteiro) irmaD).getvLig(i), no.getTL());
+                    no.setTL(no.getTL()+1);
+                }
+                ((NoPonteiro) no).setvLig(((NoPonteiro) irmaD).getvLig(irmaD.getTL()), no.getTL());
+
+                //remanejar o 'pai' e arrumar a sua ligacao para o 'no'
+                pai.remanejarExclusao(posPai);
+                ((NoPonteiro) pai).setvLig(no, posPai);
+            }
         }
     }
 
