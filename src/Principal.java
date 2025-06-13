@@ -3,32 +3,27 @@ public class Principal {
         BMais arvoreB = new BMais();
 
         //insercoes
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 100; i++)
             arvoreB.inserir(i,i);
-//            System.out.println("Arvore:");
-//            arvoreB.exibirArvoreNiveis();
-//            System.out.println("Folhas:");
-//            arvoreB.exibirFolhas();
-//            System.out.println();
-        }
 
         System.out.println("Arvore:");
-        arvoreB.exibirArvoreNiveis();
+        arvoreB.exibirArvore();
         System.out.println("Folhas Crescente:");
         arvoreB.exibirFolhas();
         System.out.println("\nFolhas Reverso:");
         arvoreB.exibirFolhasRev();
+        System.out.println("\nExibição In-Ordem:");
+        arvoreB.inOrdem();
 
         //remocoes
-        for(int i=0; i<100; i++){
-            arvoreB.remover(i);
-        }
-
-        System.out.println("Arvore:");
-        arvoreB.exibirArvoreNiveis();
-        System.out.println("Folhas Crescente:");
-        arvoreB.exibirFolhas();
-        System.out.println("\nFolhas Reverso:");
-        arvoreB.exibirFolhasRev();
+//        for(int i=0; i<100; i++)
+//            arvoreB.remover(i);
+//
+//        System.out.println("Arvore:");
+//        arvoreB.exibirArvore();
+//        System.out.println("Folhas Crescente:");
+//        arvoreB.exibirFolhas();
+//        System.out.println("\nFolhas Reverso:");
+//        arvoreB.exibirFolhasRev();
     }
 }

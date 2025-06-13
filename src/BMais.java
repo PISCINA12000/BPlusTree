@@ -476,10 +476,10 @@ public class BMais {
         }
     }
 
-    public void exibirArvoreNiveis(){
-        exibirArvoreNIVEIS(raiz, 0);
+    public void exibirArvore(){
+        exibirArvore(raiz, 0);
     }
-    private void exibirArvoreNIVEIS(No folha, int nivel){
+    private void exibirArvore(No folha, int nivel){
         //exibir os tabs para identação
         for (int i=0; i<nivel-1; i++) {
             System.out.print("\t");
@@ -496,9 +496,33 @@ public class BMais {
         //verifico se é ponteiro para chamar os seus filhos recursivamente
         if(folha instanceof NoPonteiro){
             for (int i = 0; i < folha.getTL(); i++) {
-                exibirArvoreNIVEIS(((NoPonteiro) folha).getvLig(i), nivel+1);
+                exibirArvore(((NoPonteiro) folha).getvLig(i), nivel+1);
             }
-            exibirArvoreNIVEIS(((NoPonteiro) folha).getvLig(folha.getTL()), nivel+1);
+            exibirArvore(((NoPonteiro) folha).getvLig(folha.getTL()), nivel+1);
+        }
+    }
+
+    public void inOrdem(){
+        inOrdem(raiz);
+    }
+
+    private void inOrdem(No no){
+        if(no != null){
+            if(no instanceof NoPonteiro){ //andar pra 'esquerda'
+                for(int i=0; i<no.getTL(); i++){
+                    inOrdem(((NoPonteiro) no).getvLig(i));
+                    System.out.println(no.getvInfo(i));
+                }
+            }
+            else{ //quando eu chego na 'folha' eu apenas a exibo
+                for(int i=0; i<no.getTL(); i++){
+                    System.out.println(no.getvInfo(i));
+                }
+            }
+
+            if(no instanceof NoPonteiro){ //andar para a 'direita'
+                inOrdem(((NoPonteiro) no).getvLig(no.getTL()));
+            }
         }
     }
 
