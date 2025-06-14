@@ -10,6 +10,15 @@ public class BMais {
         this(null);
     }
 
+    //Gets e Sets
+    public No getRaiz() {
+        return raiz;
+    }
+
+    public void setRaiz(No raiz) {
+        this.raiz = raiz;
+    }
+
     //Métodos-------------------------------------------------------------
     //Inserção na árvore
     public void inserir(int info, int posArq){
@@ -621,14 +630,5 @@ public class BMais {
             aux = ((NoPonteiro) aux).getvLig(aux.getTL());
         }
         return aux;
-    }
-
-    //Gets e Sets
-    public No getRaiz() {
-        return raiz;
-    }
-
-    public void setRaiz(No raiz) {
-        this.raiz = raiz;
     }
 }

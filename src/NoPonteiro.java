@@ -11,6 +11,15 @@ public class NoPonteiro extends No {
         vLig = new No[N+1];
     }
 
+    //Gets e Sets
+    public No getvLig(int pos) {
+        return vLig[pos];
+    }
+
+    public void setvLig(No lig, int pos) {
+        this.vLig[pos] = lig;
+    }
+
     //Métodos
     @Override
     public void remanejarExclusao(int pos) {
@@ -31,14 +40,5 @@ public class NoPonteiro extends No {
             vLig[i] = vLig[i-1];
         }
         //ou posso apenas deixar o meu for iniciar de getTL() ao inves de getTL()-1
-    }
-
-    //Gets e Sets
-    public No getvLig(int pos) {
-        return vLig[pos];
-    }
-
-    public void setvLig(No lig, int pos) {
-        this.vLig[pos] = lig;
     }
 }

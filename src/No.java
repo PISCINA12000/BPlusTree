@@ -18,6 +18,31 @@ public class No {
         this.TL = 0;
     }
 
+    //Gets e Sets
+    public int getvInfo(int pos) {
+        return vInfo[pos];
+    }
+
+    public void setvInfo(int info, int pos) {
+        this.vInfo[pos] = info;
+    }
+
+    public int getvPos(int pos) {
+        return vPos[pos];
+    }
+
+    public void setvPos(int posArq, int pos) {
+        this.vPos[pos] = posArq;
+    }
+
+    public int getTL() {
+        return TL;
+    }
+
+    public void setTL(int TL) {
+        this.TL = TL;
+    }
+
     //Métodos
     public int procurarPosicao(int num){
         int i=0;
@@ -50,30 +75,5 @@ public class No {
             if(info == vInfo[i])
                 contem = true;
         return contem;
-    }
-
-    //Gets e Sets
-    public int getvInfo(int pos) {
-        return vInfo[pos];
-    }
-
-    public void setvInfo(int info, int pos) {
-        this.vInfo[pos] = info;
-    }
-
-    public int getvPos(int pos) {
-        return vPos[pos];
-    }
-
-    public void setvPos(int posArq, int pos) {
-        this.vPos[pos] = posArq;
-    }
-
-    public int getTL() {
-        return TL;
-    }
-
-    public void setTL(int TL) {
-        this.TL = TL;
     }
 }

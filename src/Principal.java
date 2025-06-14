@@ -17,40 +17,39 @@ public class Principal {
 
         //remoções e inserções
         //remover tudo e depois repovoar
-        for(int i=0; i<100; i++) {
-            //arvoreB.exibirArvore();
+        for(int i=0; i<100; i++)
             arvoreB.remover(i);
-        }
         for(int i=0; i<100; i++)
             arvoreB.inserir(i,i);
         System.out.println("\nArvore completa novamente 1:");
         arvoreB.exibirArvore();
 
-        //tentar a exclusao ao contrario e depois repovoar
-        for(int i=99; i>=0; i--) {
-            //arvoreB.exibirArvore();
+        //exclusao ao contrario e depois repovoar
+        for(int i=99; i>=0; i--)
             arvoreB.remover(i);
-        }
         for(int i=0; i<100; i++)
             arvoreB.inserir(i,i);
         System.out.println("\nArvore completa novamente 2:");
         arvoreB.exibirArvore();
 
-        for(int i=10; i<20; i++){
+        //remocao mais especifica
+        for(int i=10; i<20; i++)
             arvoreB.remover(i);
-        }
         System.out.println("\nRemoção do 10 até o 19:");
         arvoreB.exibirArvore();
 
-        for(int i=75; i>=50; i--){
-            //arvoreB.exibirArvore();
+        //outra remocao mais especifica
+        for(int i=75; i>=50; i--)
             arvoreB.remover(i);
-        }
-//        arvoreB.exibirArvore();
-//        arvoreB.remover(74);
         System.out.println("\nRemoção do 50 até o 75:");
         arvoreB.exibirArvore();
+
+        //exibicao das folhas novamente
         System.out.println("\nFolhas Crescente:");
         arvoreB.exibirFolhas();
+
+        //outra exibicao in-ordem
+        System.out.println("\nExibição In-Ordem:");
+        arvoreB.inOrdem();
     }
 }
