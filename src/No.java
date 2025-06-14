@@ -44,6 +44,14 @@ public class No {
         return this instanceof NoFolha;
     }
 
+    public boolean contem(int info){
+        boolean contem = false;
+        for(int i=0; i<TL && !contem; i++)
+            if(info == vInfo[i])
+                contem = true;
+        return contem;
+    }
+
     //Gets e Sets
     public int getvInfo(int pos) {
         return vInfo[pos];

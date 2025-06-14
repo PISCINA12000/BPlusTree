@@ -45,7 +45,7 @@ public class BMais {
     public void remover(int info){
         //na remoção eu tenho alguns casos para considerar
 
-        No folha, pai, irmaE, irmaD, noIndice;
+        No folha, noIndice;
         int pos, posNoIndice;
 
         folha = procurarFolha(info);
@@ -63,10 +63,11 @@ public class BMais {
         }
         else {
             pos = folha.procurarPosicao(info);
-            if(pos == 0){
+            //preciso ter certeza de que nao eh a primeira folha para substituir o primeiro elemento
+            if(pos == 0 && folha != primeiraFolha()){
                 noIndice = procurarNoPonteiro(info);
                 posNoIndice = noIndice.procurarPosicao(info);
-                noIndice.setvInfo(folha.getvInfo(pos+1), posNoIndice);
+                noIndice.setvInfo(folha.getvInfo(pos + 1), posNoIndice);
             }
             folha.remanejarExclusao(pos);
             folha.setTL(folha.getTL()-1);
@@ -78,7 +79,7 @@ public class BMais {
 
     public void redistribuirConcatenar(No no){
         No pai, irmaE, irmaD;
-        int pos;
+        int pos, posPai;
 
         pai = localizarPai(no, no.getvInfo(0));
         irmaE = localizarIrmaEsq(no);
@@ -110,8 +111,9 @@ public class BMais {
                 //concatenarEsquerdaFolha(no, irmaE, pai);
 
                 //achar o elemento a ser tirado do pai
-                int posPai = pai.procurarPosicao(no.getvInfo(0));
+                posPai = pai.procurarPosicao(no.getvInfo(0));
                 pai.remanejarExclusao(posPai);
+                pai.setTL(pai.getTL()-1);
 
                 //enviar os elementos do No para a irmaE
                 for(int i=0; i<no.getTL(); i++){
@@ -121,14 +123,19 @@ public class BMais {
 
                 //mudo o apontamento do 'pai' para a 'irmaE'
                 ((NoPonteiro) pai).setvLig(irmaE, posPai);
+
+                //mudar o encadeamento
+                ((NoFolha) irmaE).setProx(((NoFolha) no).getProx());
+                no = irmaE;
             }
             else if (irmaD != null){
                 //concatenar com a irma da direita
                 //concatenarDireitaFolha(no, irmaD, pai);
 
                 //achar o elemento a ser tirado do pai
-                int posPai = pai.procurarPosicao(irmaD.getvInfo(0));
+                posPai = pai.procurarPosicao(irmaD.getvInfo(0));
                 pai.remanejarExclusao(posPai);
+                pai.setTL(pai.getTL()-1);
 
                 //enviar os elementos da irmaD para o no
                 for(int i=0;i<irmaD.getTL(); i++){
@@ -138,6 +145,9 @@ public class BMais {
 
                 //setar a 'pos' do vLig do 'pai' para o 'no'
                 ((NoPonteiro) pai).setvLig(no, posPai);
+
+                //mudar o encadeamento
+                ((NoFolha) no).setProx(((NoFolha) irmaD).getProx());
             }
         }
         else{ //meu no eh uma instancia de NoPonteiro
@@ -145,12 +155,13 @@ public class BMais {
                 //se entrou, entao eu posso redistribuir com ela
 
                 //descobrir no pai qual a posicao
-                int posPai = pai.procurarPosicao(no.getvInfo(0));
+                posPai = pai.procurarPosicao(no.getvInfo(0));
 
                 //remanejar o 'no' para receber o elemento do 'pai' e a subarvore da irmaE
                 no.remanejarInsercao(0);
                 no.setvInfo(pai.getvInfo(posPai-1), 0);
                 ((NoPonteiro) no).setvLig(((NoPonteiro) irmaE).getvLig(irmaE.getTL()), 0);
+                no.setTL(no.getTL()+1);
 
                 //seto o novo elemento a ser colocado no pai
                 pai.setvInfo(irmaE.getvInfo(irmaE.getTL()-1), posPai-1);
@@ -163,7 +174,10 @@ public class BMais {
                 //se entrou, entao eu posso redistribuir com ela
 
                 //descobrir no 'pai' qual a posicao
-                int posPai = pai.procurarPosicao(no.getvInfo(no.getTL()-1));
+                if(no.getTL()>0)
+                    posPai = pai.procurarPosicao(no.getvInfo(no.getTL()-1));
+                else
+                    posPai = pai.procurarPosicao(no.getvInfo(0));
 
                 //mando para o 'no' o elemento do 'pai' e a ligacao da 'irmaD'
                 no.setvInfo(pai.getvInfo(posPai), no.getTL());
@@ -182,7 +196,7 @@ public class BMais {
                 //concatenar com a irma da esquerda
 
                 //encontro a posicao do elemento no 'pai'
-                int posPai = pai.procurarPosicao(no.getvInfo(0));
+                posPai = pai.procurarPosicao(no.getvInfo(0));
 
                 //mandar para a 'irmaE' o elemento no 'pai'
                 irmaE.setvInfo(pai.getvInfo(posPai-1), irmaE.getTL());
@@ -200,12 +214,18 @@ public class BMais {
                 pai.remanejarExclusao(posPai-1);
                 pai.setTL(pai.getTL()-1);
                 ((NoPonteiro) pai).setvLig(irmaE, posPai-1);
+
+                //para possivelmente mudar a raiz se precisar
+                no = irmaE;
             }
             else if (irmaD != null){
                 //concatenar com a irma da direita
 
                 //encontro a posicao do elemento no 'pai'
-                int posPai = pai.procurarPosicao(no.getvInfo(no.getTL()-1));
+                if(no.getTL()>0)
+                    posPai = pai.procurarPosicao(no.getvInfo(no.getTL()-1));
+                else
+                    posPai = pai.procurarPosicao(no.getvInfo(0));
 
                 //mandar o elemento do 'pai' para o 'no'
                 no.setvInfo(pai.getvInfo(posPai), no.getTL());
@@ -221,8 +241,17 @@ public class BMais {
 
                 //remanejar o 'pai' e arrumar a sua ligacao para o 'no'
                 pai.remanejarExclusao(posPai);
+                pai.setTL(pai.getTL()-1);
                 ((NoPonteiro) pai).setvLig(no, posPai);
             }
+        }
+
+        //chamar recursivamente caso o pai fique com menos elementos do que o permitido
+        if(pai.getTL() < (int)Math.ceil(No.N/2.0)-1 && pai != raiz){
+            redistribuirConcatenar(pai);
+        }
+        else if(pai == raiz && pai.getTL() == 0){
+            raiz = no;
         }
     }
 
@@ -230,7 +259,8 @@ public class BMais {
         No aux = raiz;
         int pos;
         while (!aux.isFolha()){
-            pos = aux.procurarPosicao(info);
+            //pos = aux.procurarPosicao(info);
+            for(pos=0; pos<aux.getTL() && info>=aux.getvInfo(pos); pos++);
             if(aux instanceof NoPonteiro) {
                 aux = ((NoPonteiro) aux).getvLig(pos);
             }
@@ -238,31 +268,51 @@ public class BMais {
         return aux;
     }
 
+//    public No procurarNoPonteiro(int info){
+//        No aux = raiz;
+//        int pos;
+//        boolean achou = false;
+//        while(aux!=null && !achou){
+//            if(aux instanceof NoPonteiro){
+//                pos = aux.procurarPosicao(info);
+//                if(info == aux.getvInfo(pos))
+//                    achou = true;
+//                else
+//                    aux = ((NoPonteiro) aux).getvLig(pos);
+//            }
+//            else
+//                aux = null;
+//        }
+//        return aux;
+//    }
+
     public No procurarNoPonteiro(int info){
         No aux = raiz;
         int pos;
         boolean achou = false;
-        while(aux!=null && !achou){
-            if(aux instanceof NoPonteiro){
-                pos = aux.procurarPosicao(info);
-                if(info == aux.getvInfo(pos))
-                    achou = true;
-                else
-                    aux = ((NoPonteiro) aux).getvLig(pos);
-            }
+
+        while (aux instanceof NoPonteiro && !achou) {
+            pos = aux.procurarPosicao(info);
+            if (pos<aux.getTL() && aux.getvInfo(pos)==info)
+                achou = true;
             else
-                aux = null;
+                aux = ((NoPonteiro) aux).getvLig(pos);
         }
-        return aux;
+
+        if(aux instanceof NoPonteiro)
+            return aux;
+        return null;
     }
 
     public No localizarPai(No folha, int info){
         No aux, pai;
         aux = pai = raiz;
         int pos;
-        while(aux!=null && aux!=folha){
+        while(aux!=null && !aux.isFolha() && aux!=folha){
             pai = aux;
-            pos = aux.procurarPosicao(info);
+            pos = 0;
+            for(int i=0; i<aux.getTL() && info>=aux.getvInfo(i); i++)
+                pos++;
             if(aux instanceof NoPonteiro) {
                 aux = ((NoPonteiro) aux).getvLig(pos);
             }
@@ -276,7 +326,10 @@ public class BMais {
         if(pai == folha) //a folha eh raiz
             return null;
         else{
-            int pos = pai.procurarPosicao(folha.getvInfo(0));
+            int pos = 0;
+            for(int i=0; i<pai.getTL() && folha.getvInfo(0)>=pai.getvInfo(i); i++){
+                pos++;
+            }
             if(pos > 0){
                 return ((NoPonteiro) pai).getvLig(pos-1);
             }
@@ -290,7 +343,10 @@ public class BMais {
         if(pai == folha) //a folha eh raiz
             return null;
         else{
-            int pos = pai.procurarPosicao(folha.getvInfo(0));
+            int pos = 0;
+            for(int i=0; i<pai.getTL() && folha.getvInfo(0)>=pai.getvInfo(i); i++){
+                pos++;
+            }
             if(pos < pai.getTL()){
                 return ((NoPonteiro) pai).getvLig(pos+1);
             }
@@ -481,12 +537,10 @@ public class BMais {
     }
     private void exibirArvore(No folha, int nivel){
         //exibir os tabs para identação
-        for (int i=0; i<nivel-1; i++) {
+        for (int i=0; i<nivel; i++) {
             System.out.print("\t");
         }
-        if(nivel>0){
-            System.out.print(" -");
-        }
+        System.out.print("|");
         //exibir os valores do meu vetor
         for (int i = 0; i < folha.getTL(); i++) {
             System.out.print(folha.getvInfo(i) + "|");
